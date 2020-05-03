@@ -21,17 +21,22 @@ functions:
       - http:
           path: /api/users
           method: post
+  userExpensesSubmission:
+    memorySize: 128
+    description: Submit user expenses.
+    role: arn:aws:iam::146766432310:role/gerenciamento-financas-service-dev-sa-east-1-lambdaRole
+    handler: api/user/expenses.expensesSubmit
+    events:
+      - http:
+          path: /api/user/expenses
+          method: post
+  retrieveUserInfo:
+    memorySize: 128
+    description: Retrieve user informations.
+    handler: api/user/user.retrieve
+    events:
+      - http:
+          path: api/user/{email_id}
+          method: get
 plugins:
   - serverless-offline
-#resources:
-#  Resources:
-#    usersTable:
-#      Type: AWS::DynamoDB::Table
-#      Properties:
-#        TableName: users
-#        AttributeDefinitions:
-#          - AttributeName: email_id
-#            AttributeType: S
-#        KeySchema:
-#          - AttributeName: email_id
-#            KeyType: HASH

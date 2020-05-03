@@ -3,8 +3,7 @@ const Message = require('../io/message')
 const FieldsEnum = require('../io/fields-enum')
 
 module.exports = {
-    validate: (data) => {
-        console.log({data});
+    validatePrimaryInfo: (data) => {
         const response = new Array();
         response.push(Validator.required(data.nomeUsuario, FieldsEnum.NAME));
         response.push(Validator.fullName(data.nomeUsuario, FieldsEnum.NAME));
@@ -16,5 +15,10 @@ module.exports = {
         response.push(Validator.decimalNumber(data.gastoMes, FieldsEnum.GASTOS_MES));
         response.push(Validator.decimalNumber(data.rendaMes, FieldsEnum.RENDA_MES));
         return Message.createResponseMessage(response);
+    },
+
+    validateExpense: (data) => {
+        const response = new Array();
+
     }
 }
