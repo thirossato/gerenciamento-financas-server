@@ -1,0 +1,37 @@
+service: gerenciamento-financas-service
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  region: sa-east-1
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+  primaryInfoSubmission:
+    memorySize: 128
+    description: Submit user primary informations.
+    role: arn:aws:iam::146766432310:role/gerenciamento-financas-service-dev-sa-east-1-lambdaRole
+    handler: api/user/primary-info.primaryInfoSubmit
+    events:
+      - http:
+          path: /api/users
+          method: post
+plugins:
+  - serverless-offline
+#resources:
+#  Resources:
+#    usersTable:
+#      Type: AWS::DynamoDB::Table
+#      Properties:
+#        TableName: users
+#        AttributeDefinitions:
+#          - AttributeName: email_id
+#            AttributeType: S
+#        KeySchema:
+#          - AttributeName: email_id
+#            KeyType: HASH
