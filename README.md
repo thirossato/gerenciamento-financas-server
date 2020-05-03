@@ -11,4 +11,4 @@ Antes de executar o projeto instale as dependencias do npm com o comando
 
 ## Rodando local
 Para executar em sua maquina local execute o comando
-' serverless offline '
+`serverless offline`
