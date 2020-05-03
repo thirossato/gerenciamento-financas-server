@@ -13,11 +13,13 @@ function removeEmptyStringElements(obj) {
     }
 }
 
+TABLE_NAME = 'users'
+
 module.exports.dynamo = {
     put: async (data) => {
         removeEmptyStringElements(data);
         const params = {
-            TableName: 'users',
+            TableName: TABLE_NAME,
             Item: data
         }
         return new Promise(function (resolve, reject) {
@@ -37,7 +39,7 @@ module.exports.dynamo = {
         }
         removeEmptyStringElements(expense);
         const params = {
-            TableName: 'users',
+            TableName: TABLE_NAME,
             Key: {email_id: data.email_id},
             ReturnValues: 'ALL_NEW',
             UpdateExpression: 'set #gastos = list_append(if_not_exists(#gastos, :empty_list), :expense)',
@@ -59,15 +61,61 @@ module.exports.dynamo = {
             });
         })
     },
-    getUser: async(email_id) => {
+
+    updateExpensesArray: async (data) => {
+        let expense = data.gastos;
+        if (!expense) {
+            return;
+        }
+        removeEmptyStringElements(expense);
         const params = {
-            TableName: 'users',
+            TableName: TABLE_NAME,
+            Key: {email_id: data.email_id},
+            ReturnValues: 'ALL_NEW',
+            UpdateExpression: 'set #gastos = list_append(if_not_exists(#gastos, :empty_list), :expense)',
+            ExpressionAttributeNames: {
+                '#gastos': 'gastos'
+            },
+            ExpressionAttributeValues: {
+                ':expense': expense,
+                ':empty_list': []
+            }
+        }
+        return new Promise(function (resolve, reject) {
+            docClient.update(params, function (err, data) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(data);
+                }
+            });
+        })
+    },
+    getUser: async (email_id) => {
+        const params = {
+            TableName: TABLE_NAME,
             Key: {email_id}
         }
-        return new Promise(function (resolve,reject) {
-            docClient.get(params, function (err,data) {
-                if(err) {
+        return new Promise(function (resolve, reject) {
+            docClient.get(params, function (err, data) {
+                if (err) {
                     reject(err);
+                } else {
+                    resolve(data);
+                }
+            })
+        })
+    },
+    queryExpensesByDate: async (email_id, date) => {
+        const params = {
+            TableName: TABLE_NAME,
+            Key: {email_id},
+            ProjectionExpression: "gastos",
+        }
+        return new Promise(function (resolve, reject) {
+            docClient.get(params, function (err, data) {
+                if(err){
+                    reject(err)
                 }else{
                     resolve(data);
                 }

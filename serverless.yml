@@ -19,7 +19,7 @@ functions:
     handler: api/user/primary-info.primaryInfoSubmit
     events:
       - http:
-          path: /api/users
+          path: /api/user
           method: post
   userExpensesSubmission:
     memorySize: 128
@@ -36,7 +36,24 @@ functions:
     handler: api/user/user.retrieve
     events:
       - http:
-          path: api/user/{email_id}
+          path: /api/user/{email_id}
           method: get
+  retrieveUserExpenses:
+    memorySize: 128
+    description: Retrieve user informations.
+    role: arn:aws:iam::146766432310:role/gerenciamento-financas-service-dev-sa-east-1-lambdaRole
+    handler: api/user/user.retrieveExpensesOnDate
+    events:
+      - http:
+          path: /api/user/{email_id}/date/{date}
+          method: get
+#  retrieveUserExpenses:
+#    memorySize: 128
+#    description: Retrieve user expenses on passed date.
+#    handler: api/user/user.retrieveExpensesOnDate
+#    event:
+#      - http:
+#          path: /api/user/{date}
+#          method: get
 plugins:
   - serverless-offline
