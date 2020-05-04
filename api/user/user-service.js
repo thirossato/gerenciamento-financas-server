@@ -35,6 +35,7 @@ module.exports = {
                 message: validations.fields
             })
         }
+        console.log({ret});
         return ret;
     },
     submitExpenses: async (data) => {
