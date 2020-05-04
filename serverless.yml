@@ -4,7 +4,15 @@ provider:
   name: aws
   runtime: nodejs10.x
   region: sa-east-1
-
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
 functions:
   hello:
     handler: handler.hello
@@ -15,7 +23,6 @@ functions:
   primaryInfoSubmission:
     memorySize: 128
     description: Submit user primary informations.
-    role: arn:aws:iam::146766432310:role/gerenciamento-financas-service-dev-sa-east-1-lambdaRole
     handler: api/user/primary-info.primaryInfoSubmit
     events:
       - http:
@@ -24,7 +31,6 @@ functions:
   userExpensesSubmission:
     memorySize: 128
     description: Submit user expenses.
-    role: arn:aws:iam::146766432310:role/gerenciamento-financas-service-dev-sa-east-1-lambdaRole
     handler: api/user/expenses.expensesSubmit
     events:
       - http:
@@ -41,19 +47,13 @@ functions:
   retrieveUserExpenses:
     memorySize: 128
     description: Retrieve user informations.
-    role: arn:aws:iam::146766432310:role/gerenciamento-financas-service-dev-sa-east-1-lambdaRole
     handler: api/user/user.retrieveExpensesOnDate
     events:
       - http:
           path: /api/user/{email_id}/date/{date}
           method: get
-#  retrieveUserExpenses:
-#    memorySize: 128
-#    description: Retrieve user expenses on passed date.
-#    handler: api/user/user.retrieveExpensesOnDate
-#    event:
-#      - http:
-#          path: /api/user/{date}
-#          method: get
 plugins:
   - serverless-offline
+
+
+
